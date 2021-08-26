@@ -7,19 +7,14 @@
   <script type="text/babel">
     const rootElement = document.getElementById('root')
 
-    function SayHello({firstName, lastName}) {
-      return (
-        <div>
-          Hello {firstName} {lastName}!
-        </div>
-      )
-    }
+    const SayHello = (props) => <div className="container"> Hola {props.firstName} {props.lastName}!</div> 
+
     SayHello.propTypes = {
       firstName: PropTypes.string.isRequired,
       lastName: PropTypes.string.isRequired,
     }
 
-    const element = <SayHello firstName={false} />
+    const element = <SayHello firstName="Juan Carlos" lastName="Geronimo"/>
 
     ReactDOM.render(element, rootElement)
   </script>
