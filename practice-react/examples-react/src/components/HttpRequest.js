@@ -1,25 +1,45 @@
 import { useState, useEffect } from "react";
 
 const PokemonInfo = ({pokemonName}) =>{
+    const [status, setStatus] = useState('idle')
     const [pokemon, setPokemon] = useState(null)
+    const [error, setError] = useState(null)
     useEffect(() => {
         if(!pokemonName){
             return 
         }
+        setStatus('pending')
         fetchPokemon(pokemonName).then(
             pokemonData => {
                 setPokemon(pokemonData)
+                setStatus('resolved')
+            },
+            errorData => {
+                setError(errorData)
+                setStatus('rejected')
             }
         )
     }, [pokemonName])
+
+    if (status === 'idle'){
+        return 'Submit a Pokemon'
+    }
+
     if (!pokemonName){
         return 'Submit a pokemon name'
     }
-    if (!pokemon){
+
+    if (status === 'rejected'){
+        return <div>Oh no! There was an error with the request :(</div>
+    }
+    if (status === 'pending'){
         return '...'
     }
 
-    return <pre>{JSON.stringify(pokemon, null, 2)}</pre>
+    if (status === 'resolved'){
+        return <pre>{JSON.stringify(pokemon, null, 2)}</pre>
+    }
+
 }
 
 function fetchPokemon(name){
@@ -42,7 +62,7 @@ function fetchPokemon(name){
         // to learn more about this API: https://graphql-pokemon.now.sh
         method: 'POST',
         headers: {
-            'content-type': 'application/json;charset=UTF-8',
+            'content-type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
             query: pokemonQuery,
